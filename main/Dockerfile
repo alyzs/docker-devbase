@@ -23,5 +23,12 @@ RUN apt-get install -y sysvinit-core sysvinit sysvinit-utils \
 RUN echo 'America/New_York' > /etc/timezone \
     && dpkg-reconfigure tzdata
 
-RUN apt-get -y upgrade \
-    && apt-get install -y wget vim-tiny
+RUN apt-get -y dist-upgrade
+
+# install busybox and create links to all apps in /usr/local/bbin
+RUN apt-get install -y busybox-static \
+    && ln -s /bin/busybox /usr/local/bin/vi \
+    && ln -s /bin/busybox /usr/local/bin/wget \
+    && mkdir /usr/local/bbin \
+    && cd /usr/local/bbin \
+    && /bin/busybox --list | /bin/busybox xargs -n 1 ln -s /bin/busybox
