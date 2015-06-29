@@ -31,4 +31,7 @@ RUN apt-get install -y busybox-static \
     && ln -s /bin/busybox /usr/local/bin/wget \
     && mkdir /usr/local/bbin \
     && cd /usr/local/bbin \
-    && /bin/busybox --list | /bin/busybox xargs -n 1 ln -s /bin/busybox
+    && /bin/busybox --list | /bin/busybox xargs -n 1 ln -s /bin/busybox \
+    && echo "export PATH=${PATH}:/usr/local/bbin" > /etc/profile.d/10_add_bbin_to_path.sh
+
+CMD ["/bin/bash","-l"]
