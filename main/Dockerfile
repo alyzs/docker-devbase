@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
     && apt-get install -y apt-utils
 
-# Remove systemd
+# Remove systemd to avoid bloat from all the unnecessary updates
 RUN apt-get install -y sysvinit-core sysvinit sysvinit-utils \
     && apt-get remove -y --purge --auto-remove systemd \
     && echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > /etc/apt/preferences.d/systemd \
@@ -25,13 +25,36 @@ RUN echo 'America/New_York' > /etc/timezone \
 
 RUN apt-get -y dist-upgrade
 
-# install busybox and create links to all apps in /usr/local/bbin
-RUN apt-get install -y busybox-static \
+# compile busybox 1.23.2 from source
+ADD http://busybox.net/downloads/busybox-1.23.2.tar.bz2 /tmp/
+RUN apt-get install -y make gcc \
+    && apt-get install -y bzip2 \
+    && cd /tmp \
+    && tar -xvjf busybox-1.23.2.tar.bz2 \
+    && cd /tmp/busybox-1.23.2 \
+    && make defconfig \
+    && sed -e "s@# CONFIG_STATIC is not set@CONFIG_STATIC=y@" -i .config \
+    && make \
+    && cp /tmp/busybox-1.23.2/busybox /bin/busybox \
+    && apt-get remove -y --purge --auto-remove make gcc bzip2 \
+    && rm -rf /tmp/busybox*
+
+# set busybox suid and add all apps to /usr/local/bbin
+RUN chmod 4755 /bin/busybox \
     && ln -s /bin/busybox /usr/local/bin/vi \
     && ln -s /bin/busybox /usr/local/bin/wget \
     && mkdir /usr/local/bbin \
     && cd /usr/local/bbin \
     && /bin/busybox --list | /bin/busybox xargs -n 1 ln -s /bin/busybox \
     && echo "export PATH=${PATH}:/usr/local/bbin" > /etc/profile.d/10_add_bbin_to_path.sh
+
+# create directories for busybox crond
+RUN mkdir -p /var/spool/cron/crontabs \
+    && chmod 700 /var/spool/cron/crontabs
+
+# Add s6 init system
+ADD https://github.com/just-containers/s6-overlay/releases/download/v1.13.0.0/s6-overlay-amd64.tar.gz /tmp/
+RUN gunzip -c /tmp/s6-overlay-amd64.tar.gz | tar -xf - -C /
+ENTRYPOINT ["/init"]
 
 CMD ["/bin/bash","-l"]
