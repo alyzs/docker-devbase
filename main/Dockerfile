@@ -12,23 +12,24 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
     && apt-get install -y apt-utils
 
-# Remove systemd to avoid bloat from all the unnecessary updates
-RUN apt-get install -y sysvinit-core sysvinit sysvinit-utils \
-    && apt-get remove -y --purge --auto-remove systemd \
-    && echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > /etc/apt/preferences.d/systemd \
-    && echo -e '\nPackage: systemd:amd64\nPin: origin ""\nPin-Priority: -1' >> /etc/apt/preferences.d/systemd \
-    && echo -e '\nPackage: systemd:i386\nPin: origin ""\nPin-Priority: -1' >> /etc/apt/preferences.d/systemd
-
 # set timezone to EST
 RUN echo 'America/New_York' > /etc/timezone \
     && dpkg-reconfigure tzdata
 
-RUN apt-get -y dist-upgrade
+# Remove systemd to avoid bloat from all the unnecessary updates
+# RUN apt-get install -y sysvinit-core sysvinit sysvinit-utils \
+#     && apt-get remove -y --purge --auto-remove systemd \
+#     && echo -e 'Package: systemd\nPin: origin ""\nPin-Priority: -1' > /etc/apt/preferences.d/systemd \
+#     && echo -e '\nPackage: systemd:amd64\nPin: origin ""\nPin-Priority: -1' >> /etc/apt/preferences.d/systemd \
+#     && echo -e '\nPackage: systemd:i386\nPin: origin ""\nPin-Priority: -1' >> /etc/apt/preferences.d/systemd
+
+# prevent unnecessary packages from installing updates
+RUN /bin/echo -e "systemd hold\nudev hold\nsystemd-sysv hold\nprocps hold" | dpkg --set-selections \
+    && apt-get -y dist-upgrade
 
 # compile busybox 1.23.2 from source
 ADD http://busybox.net/downloads/busybox-1.23.2.tar.bz2 /tmp/
-RUN apt-get install -y make gcc \
-    && apt-get install -y bzip2 \
+RUN apt-get install -y make gcc bzip2 \
     && cd /tmp \
     && tar -xvjf busybox-1.23.2.tar.bz2 \
     && cd /tmp/busybox-1.23.2 \
