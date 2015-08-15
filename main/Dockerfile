@@ -53,6 +53,11 @@ RUN chmod 4755 /bin/busybox \
 RUN mkdir -p /var/spool/cron/crontabs \
     && chmod 700 /var/spool/cron/crontabs
 
+# add spawnvp helper for passthru executions
+RUN echo "#!/usr/local/bbin/sh" > /usr/local/bin/spawnvp \
+    && echo "if test \$# -gt 0; then \$*; fi" >> /usr/local/bin/spawnvp \
+    && chmod 755 /usr/local/bin/spawnvp
+
 # Add s6 init system
 ADD https://github.com/just-containers/s6-overlay/releases/download/v1.13.0.0/s6-overlay-amd64.tar.gz /tmp/
 RUN gunzip -c /tmp/s6-overlay-amd64.tar.gz | tar -xf - -C /
