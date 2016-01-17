@@ -27,16 +27,16 @@ RUN echo 'America/New_York' > /etc/timezone \
 RUN /bin/echo -e "systemd hold\nudev hold\nsystemd-sysv hold\nprocps hold" | dpkg --set-selections \
     && apt-get -y dist-upgrade
 
-# compile busybox 1.23.2 from source
-ADD http://busybox.net/downloads/busybox-1.23.2.tar.bz2 /tmp/
+# compile busybox 1.24.1 from source
+ADD http://busybox.net/downloads/busybox-1.24.1.tar.bz2 /tmp/
 RUN apt-get install -y make gcc bzip2 \
     && cd /tmp \
-    && tar -xvjf busybox-1.23.2.tar.bz2 \
-    && cd /tmp/busybox-1.23.2 \
+    && tar -xvjf busybox-1.24.1.tar.bz2 \
+    && cd /tmp/busybox-1.24.1 \
     && make defconfig \
     && sed -e "s@# CONFIG_STATIC is not set@CONFIG_STATIC=y@" -i .config \
     && make \
-    && cp /tmp/busybox-1.23.2/busybox /bin/busybox \
+    && cp /tmp/busybox-1.24.1/busybox /bin/busybox \
     && apt-get remove -y --purge --auto-remove make gcc bzip2 \
     && rm -rf /tmp/busybox*
 
