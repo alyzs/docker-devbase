@@ -30,7 +30,7 @@ RUN /bin/echo -e "systemd hold\nudev hold\nsystemd-sysv hold\nprocps hold" | dpk
 
 # compile busybox 1.24.1 from source
 ADD http://busybox.net/downloads/busybox-1.24.1.tar.bz2 /tmp/
-RUN apt-get install -y make gcc bzip2 \
+RUN apt-get install -y make gcc bzip2 perl \
     && cd /tmp \
     && tar -xvjf busybox-1.24.1.tar.bz2 \
     && cd /tmp/busybox-1.24.1 \
@@ -38,7 +38,7 @@ RUN apt-get install -y make gcc bzip2 \
     && sed -e "s@# CONFIG_STATIC is not set@CONFIG_STATIC=y@" -i .config \
     && make \
     && cp /tmp/busybox-1.24.1/busybox /bin/busybox \
-    && apt-get remove -y --purge --auto-remove make gcc bzip2 \
+    && apt-get remove -y --purge --auto-remove make gcc bzip2 perl \
     && rm -rf /tmp/busybox*
 
 # set busybox suid and add all apps to /usr/local/bbin
@@ -60,7 +60,7 @@ RUN echo "#!/usr/local/bbin/sh" > /usr/local/bin/spawnvp \
     && chmod 755 /usr/local/bin/spawnvp
 
 # Add s6 init system
-ADD https://github.com/just-containers/s6-overlay/releases/download/v1.13.0.0/s6-overlay-amd64.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/v1.17.1.2/s6-overlay-amd64.tar.gz /tmp/
 RUN gunzip -c /tmp/s6-overlay-amd64.tar.gz | tar -xf - -C /
 ENTRYPOINT ["/init"]
 
