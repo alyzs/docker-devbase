@@ -14,6 +14,7 @@ RUN apt-get update \
 
 # set timezone to EST
 RUN echo 'America/New_York' > /etc/timezone \
+    && rm -f /etc/localtime \
     && dpkg-reconfigure tzdata
 
 # Remove systemd to avoid bloat from all the unnecessary updates
