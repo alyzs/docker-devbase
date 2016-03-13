@@ -42,8 +42,8 @@ RUN apt-get install -y make gcc bzip2 perl \
     && rm -rf /tmp/busybox*
 
 # set busybox suid and add all apps to /usr/local/bbin
-RUN chmod 4755 /bin/busybox \
-    && ln -s /bin/busybox /usr/local/bin/vi \
+RUN chmod 4755 /bin/busybox
+RUN ln -s /bin/busybox /usr/local/bin/vi \
     && ln -s /bin/busybox /usr/local/bin/wget \
     && mkdir /usr/local/bbin \
     && cd /usr/local/bbin \
