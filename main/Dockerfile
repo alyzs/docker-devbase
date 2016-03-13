@@ -60,7 +60,7 @@ RUN echo "#!/usr/local/bbin/sh" > /usr/local/bin/spawnvp \
     && chmod 755 /usr/local/bin/spawnvp
 
 # Add s6 init system
-ADD https://github.com/just-containers/s6-overlay/releases/download/v1.17.1.2/s6-overlay-amd64.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/v1.17.2.0/s6-overlay-amd64.tar.gz /tmp/
 RUN gunzip -c /tmp/s6-overlay-amd64.tar.gz | tar -xf - -C /
 ENTRYPOINT ["/init"]
 
