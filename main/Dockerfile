@@ -28,16 +28,16 @@ RUN echo 'America/New_York' > /etc/timezone \
 RUN /bin/echo -e "systemd hold\nudev hold\nsystemd-sysv hold\nprocps hold" | dpkg --set-selections \
     && apt-get -y dist-upgrade
 
-# compile busybox 1.24.1 from source
-ADD http://busybox.net/downloads/busybox-1.24.1.tar.bz2 /tmp/
+# compile busybox 1.25.0 from source
+ADD http://busybox.net/downloads/busybox-1.25.0.tar.bz2 /tmp/
 RUN apt-get install -y make gcc bzip2 perl \
     && cd /tmp \
-    && tar -xvjf busybox-1.24.1.tar.bz2 \
-    && cd /tmp/busybox-1.24.1 \
+    && tar -xvjf busybox-1.25.0.tar.bz2 \
+    && cd /tmp/busybox-1.25.0 \
     && make defconfig \
     && sed -e "s@# CONFIG_STATIC is not set@CONFIG_STATIC=y@" -i .config \
     && make \
-    && cp /tmp/busybox-1.24.1/busybox /bin/busybox \
+    && cp /tmp/busybox-1.25.0/busybox /bin/busybox \
     && apt-get remove -y --purge --auto-remove make gcc bzip2 perl \
     && rm -rf /tmp/busybox*
 
@@ -60,7 +60,7 @@ RUN echo "#!/usr/local/bbin/sh" > /usr/local/bin/spawnvp \
     && chmod 755 /usr/local/bin/spawnvp
 
 # Add s6 init system
-ADD https://github.com/just-containers/s6-overlay/releases/download/v1.17.2.0/s6-overlay-amd64.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/v1.18.1.3/s6-overlay-amd64.tar.gz /tmp/
 RUN gunzip -c /tmp/s6-overlay-amd64.tar.gz | tar -xf - -C /
 ENTRYPOINT ["/init"]
 
