@@ -61,7 +61,10 @@ RUN echo "#!/usr/local/bbin/sh" > /usr/local/bin/spawnvp \
 
 # Add s6 init system
 ADD https://github.com/just-containers/s6-overlay/releases/download/v1.18.1.3/s6-overlay-amd64.tar.gz /tmp/
-RUN gunzip -c /tmp/s6-overlay-amd64.tar.gz | tar -xf - -C /
+# workaround to handle /bin and /sbin symlinks
+RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" --exclude="./sbin" \
+    && tar xzf /tmp/s6-overlay-amd64.tar.gz -C /usr ./bin ./sbin
 ENTRYPOINT ["/init"]
 
 CMD ["/bin/bash","-l"]
+
