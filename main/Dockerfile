@@ -29,7 +29,7 @@ RUN /bin/echo -e "systemd hold\nudev hold\nsystemd-sysv hold\nprocps hold" | dpk
     && apt-get -y dist-upgrade
 
 # compile busybox 1.25.0 from source
-ADD http://busybox.net/downloads/busybox-1.25.0.tar.bz2 /tmp/
+ADD http://busybox.net/downloads/busybox-1.25.1.tar.bz2 /tmp/
 RUN apt-get install -y make gcc bzip2 perl \
     && cd /tmp \
     && tar -xvjf busybox-1.25.0.tar.bz2 \
@@ -60,11 +60,10 @@ RUN echo "#!/usr/local/bbin/sh" > /usr/local/bin/spawnvp \
     && chmod 755 /usr/local/bin/spawnvp
 
 # Add s6 init system
-ADD https://github.com/just-containers/s6-overlay/releases/download/v1.18.1.3/s6-overlay-amd64.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/v1.18.1.5/s6-overlay-amd64.tar.gz /tmp/
 # workaround to handle /bin and /sbin symlinks
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" --exclude="./sbin" \
     && tar xzf /tmp/s6-overlay-amd64.tar.gz -C /usr ./bin ./sbin
 ENTRYPOINT ["/init"]
 
 CMD ["/bin/bash","-l"]
-
