@@ -50,6 +50,11 @@ RUN ln -s /bin/busybox /usr/local/bin/vi \
     && /bin/busybox --list | /bin/busybox xargs -n 1 ln -s /bin/busybox \
     && echo "export PATH=${PATH}:/usr/local/bbin" > /etc/profile.d/10_add_bbin_to_path.sh
 
+# update root bash environment
+RUN echo ""  >> /root/.bashrc \
+    && echo "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bbin" >> /root/.bashrc \
+    && echo 'alias d="ls -alis"' >> /root/.bashrc
+
 # create directories for busybox crond
 RUN mkdir -p /var/spool/cron/crontabs \
     && chmod 700 /var/spool/cron/crontabs
