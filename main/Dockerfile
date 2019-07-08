@@ -3,7 +3,7 @@
 #
 
 # Pull base image.
-FROM debian:stretch
+FROM debian:buster
 
 # set environment
 ENV DEBIAN_FRONTEND noninteractive
