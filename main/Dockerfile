@@ -29,7 +29,7 @@ RUN /bin/echo -e "systemd hold\nudev hold\nsystemd-sysv hold\nprocps hold" | dpk
     && apt-get -y dist-upgrade
 
 # compile busybox 1.26.2 from source
-ADD http://busybox.net/downloads/busybox-1.26.2.tar.bz2 /tmp/
+ADD http://busybox.net/downloads/busybox-1.31.0.tar.bz2 /tmp/
 RUN apt-get install -y make gcc bzip2 perl \
     && cd /tmp \
     && tar -xvjf busybox-1.26.2.tar.bz2 \
