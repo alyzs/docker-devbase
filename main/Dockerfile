@@ -3,7 +3,7 @@
 #
 
 # Pull base image.
-FROM debian:jessie
+FROM debian:stretch
 
 # set environment
 ENV DEBIAN_FRONTEND noninteractive
@@ -66,9 +66,10 @@ RUN echo "#!/usr/local/bbin/sh" > /usr/local/bin/spawnvp \
 
 # Add s6 init system
 ADD https://github.com/just-containers/s6-overlay/releases/download/v1.18.1.5/s6-overlay-amd64.tar.gz /tmp/
+RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 # workaround to handle /bin and /sbin symlinks
-RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" --exclude="./sbin" \
-    && tar xzf /tmp/s6-overlay-amd64.tar.gz -C /usr ./bin ./sbin
+# RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" --exclude="./sbin" \
+#     && tar xzf /tmp/s6-overlay-amd64.tar.gz -C /usr ./bin ./sbin
 ENTRYPOINT ["/init"]
 
 CMD ["/bin/bash","-l"]
