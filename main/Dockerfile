@@ -3,7 +3,7 @@
 #
 
 # Pull base image.
-FROM debian:stretch
+FROM debian:stretch-20190610
 
 # set environment
 ENV DEBIAN_FRONTEND noninteractive
