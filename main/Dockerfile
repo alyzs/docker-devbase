@@ -3,7 +3,7 @@
 #
 
 # Pull base image.
-FROM debian:buster-20190610
+FROM debian:bullseye-20211011
 
 # set environment
 ENV DEBIAN_FRONTEND noninteractive
